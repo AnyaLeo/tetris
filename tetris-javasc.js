@@ -47,7 +47,14 @@ function drawGrid() {
 	}
 }
 
-drawRect();
+function mainDraw () {
 
-setInterval(drawRect, 50);
-drawGrid();
+	ctx.clearRect(0, 0, canvas.width, canvas.height);
+	drawRect(); 
+	drawGrid();
+}
+
+//drawRect();
+
+setInterval(mainDraw, 1000);
+
