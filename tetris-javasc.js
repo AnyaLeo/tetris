@@ -14,4 +14,26 @@ function drawRect() {
 	ctx.closePath();
 }
 
+function drawGrid() {
+	//draw vertical lines of grid
+  for( var x=0; x<canvas.width; x+=20){
+		ctx.beginPath();
+    ctx.strokeStyle="black";
+		ctx.moveTo(x, 0);
+		ctx.lineTo(x, canvas.height);
+		ctx.stroke();
+		ctx.closePath();
+	}
+	//draw horizontal lines
+	for( var y=0; y<canvas.height; y+=20){
+		ctx.beginPath();
+		ctx.strokeStyle="black";
+		ctx.moveTo(0, y);
+		ctx.lineTo(canvas.width, y);
+		ctx.stroke();
+		ctx.closePath();
+	}
+}
+
 drawRect();
+drawGrid();
