@@ -1,16 +1,21 @@
-//VARIABLES
+/*******************************
+
+	VARIABLES
+
+*******************************/
 
 var canvas = document.getElementById("theCanvas");
 var ctx = canvas.getContext("2d");
 
 var cellWidth = 20;
 var cellHeight = 20;
-
 var cellXNum = canvas.width/cellWidth;
 var cellYNum = canvas.height/cellHeight; 
 
+//the start positions of the box
 var boxBeginX = canvas.width/2;
 var boxBeginY = -cellHeight;
+
 
 var cells = [];
 
@@ -21,9 +26,31 @@ for(var c=0; c<canvas.width; c+=20) {
 	}
 }
 
+var moveLeft = false;
+var moveRight = false;
 
+/***************************
 
-//FUNCTIONS
+	FUNCTIONS
+
+****************************/
+
+document.addEventListener("keydown", move, false);
+
+//move the box
+function move (e) {
+	if (e.keyCode == 37) {
+		//move left
+		moveLeft = true;
+		console.log("left arrow pressed");
+
+	} else if (e.keyCode == 39) {
+		//move right
+		moveRight = true;
+		console.log("right arrow pressed");
+	}
+
+}
 
 
 //draw a box shape
@@ -37,6 +64,7 @@ function drawBox(x, y) {
 	ctx.closePath();
 
 	//move it
+
 	//y += cellWidth;
 
 	if(y == canvas.height) {
@@ -44,8 +72,8 @@ function drawBox(x, y) {
 		//console.log(cells[boxBeginX][400].status);
 		//console.log("the values are"+x + y);
 		//console.log("we reached the bottom");
-		console.log(ce.status); 
-		console.log("success");
+		//console.log(ce.status); 
+		//console.log("success");
 		ce.status = 1;
 
 	}
@@ -79,32 +107,44 @@ function mainDraw () {
 
 
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-		//check for non-empty boxes in cells
-	
-
 	drawGrid();
+
+	//check if player moved the box via keys
+	if(moveRight) {
+		moveRight = false;
+
+		if(boxBeginX < canvas.width-cellWidth) {
+			/*console.log("boxBeginX is"+boxBeginX+" canvas width-cellWidth is"+ (canvas.width-cellWidth));
+			console.log(boxBeginX <= canvas.width);*/
+
+			boxBeginX += 20;
+			}
+
+	} else if(moveLeft) {
+		moveLeft = false;
+
+		if(boxBeginX >= cellWidth) {
+			boxBeginX -= 20;
+		}
+
+	}
+	boxBeginY += cellHeight;
+
 
 	drawBox(boxBeginX, boxBeginY-20); 
 
-	boxBeginY += cellHeight;
-
-for(var c=0; c<canvas.width; c+=20) {
-	
-		for(var r=0; r<canvas.height; r+=20) {
-			if(cells[c][r].status == 1) {
-				drawBox(c, r);
-				console.log("status 1");
-				console.log(boxBeginX, boxBeginY);
-
-				//boxBeginY = -cellHeight;
+	//check for non-empty boxes in cells
+	for(var c=0; c<canvas.width; c+=20) {
+		
+			for(var r=0; r<canvas.height; r+=20) {
+				if(cells[c][r].status == 1) {
+					drawBox(c, r);
+					
+				}
 			}
 		}
-	}
 	
 }
 
-//drawRect();
-
-setInterval(mainDraw, 50);
+setInterval(mainDraw, 500);
 
