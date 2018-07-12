@@ -10,7 +10,7 @@ var ctx = canvas.getContext("2d");
 var cellWidth = 20;
 var cellHeight = 20;
 var cellXNum = canvas.width/cellWidth;
-var cellYNum = canvas.height/cellHeight; 
+var cellYNum = canvas.height/cellHeight;
 
 //the start positions of the box
 var boxBeginX = canvas.width/2;
@@ -19,10 +19,11 @@ var boxBeginY = -cellHeight;
 
 var cells = [];
 
-for(var c=0; c<canvas.width; c+=20) {
+//rows and columns start at one
+for(var c=1; c<canvas.width/cellWidth; c++) {
 	cells[c] = [];
-	for(var r=0; r<canvas.height; r+=20) {
-		cells[c][r] = { x: c, y: r, status: 0}; 
+	for(var r=1; r<canvas.height/cellWidth; r++) {
+		cells[c][r] = { x: c*cellWidth, y: r*cellWidth, status: 0};
 	}
 }
 
@@ -68,18 +69,69 @@ function drawBox(x, y) {
 	//y += cellWidth;
 
 	if(y == canvas.height) {
-		var ce = cells[x][y-20];
+		var ce = cells[x/20][(y-20)/20];
 		//console.log(cells[boxBeginX][400].status);
 		//console.log("the values are"+x + y);
 		//console.log("we reached the bottom");
-		//console.log(ce.status); 
+		//console.log(ce.status);
 		//console.log("success");
 		ce.status = 1;
 
 	}
+}
 
+function drawi(x, y){
+	for( var i = 0; i < 4; i++ ){
+		y += 20;
+		drawBox(x, y);
+	}
+}
 
+function drawL(x, y){
+	for( var i = 0; i < 3; i++ ){
+		y += 20;
+		drawBox(x, y);
+	}
+	drawBox(x+20, y);
+}
 
+function drawRL(x, y){
+	for( var i = 0; i < 3; i++ ){
+		y += 20;
+		drawBox(x, y);
+	}
+	drawBox(x-20, y);
+}
+
+function drawt(x, y){
+	drawBox(x, y);
+	x -= 20;
+	y += 20;
+	for( var i = 0; i < 3; i++ ){
+		drawBox(x, y);
+		x += 20;
+	}
+}
+
+function drawsq(x, y){
+	drawBox(x, y);
+	drawBox(x+20, y);
+	drawBox(x, y+20);
+	drawBox(x+20, y+20);
+}
+
+function drawidk(x, y){
+	drawBox(x, y);
+	drawBox(x+20, y+20);
+	drawBox(x, y+20);
+	drawBox(x+20, y+20*2);
+}
+
+function drawRidk(x, y){
+	drawBox(x, y);
+	drawBox(x-20, y+20);
+	drawBox(x, y+20);
+	drawBox(x-20, y+20*2);
 }
 
 function drawGrid() {
@@ -103,11 +155,22 @@ function drawGrid() {
 	}
 }
 
+//if this function is used in the mainDraw function, the shape will change constantly. where else could it go??
+function pickshape(x, y){
+	var num = Math.floor(Math.random() * (7 - 1 + 1)) + 1;;    //idk how this works but ill trust their logic
+	if(num == 1){drawi(x, y);}
+	if(num == 2){drawL(x, y);}
+	if(num == 3){drawRL(x, y);}
+	if(num == 4){drawt(x, y);}
+	if(num == 5){drawsq(x, y);}
+	if(num == 6){drawidk(x, y);}
+	if(num == 7){drawRidk(x, y);}
+}
+
 function mainDraw () {
 
 
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
-	drawGrid();
 
 	//check if player moved the box via keys
 	if(moveRight) {
@@ -131,20 +194,22 @@ function mainDraw () {
 	boxBeginY += cellHeight;
 
 
-	drawBox(boxBeginX, boxBeginY-20); 
+	//drawBox(boxBeginX, boxBeginY-20);
+	drawi(boxBeginX, boxBeginY);
 
 	//check for non-empty boxes in cells
-	for(var c=0; c<canvas.width; c+=20) {
-		
-			for(var r=0; r<canvas.height; r+=20) {
+	for(var c=1; c<canvas.width/cellWidth; c++) {
+
+			for(var r=1; r<canvas.height/cellWidth; r++) {
 				if(cells[c][r].status == 1) {
-					drawBox(c, r);
-					
+					drawBox(c*cellWidth, r*cellWidth);
+
 				}
 			}
 		}
-	
+
+	drawGrid();    //here to keep the grid on top of everything else
+
 }
 
 setInterval(mainDraw, 500);
-
