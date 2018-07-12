@@ -89,18 +89,18 @@ function drawi(x, y){
 
 function drawL(x, y){
 	for( var i = 0; i < 3; i++ ){
-		y += 20;
 		drawBox(x, y);
+		y += 20;
 	}
-	drawBox(x+20, y);
+	drawBox(x+20, y-20);
 }
 
 function drawRL(x, y){
 	for( var i = 0; i < 3; i++ ){
-		y += 20;
 		drawBox(x, y);
+		y += 20;
 	}
-	drawBox(x-20, y);
+	drawBox(x-20, y-20);
 }
 
 function drawt(x, y){
@@ -157,7 +157,7 @@ function drawGrid() {
 
 //if this function is used in the mainDraw function, the shape will change constantly. where else could it go??
 function pickshape(x, y){
-	var num = Math.floor(Math.random() * (7 - 1 + 1)) + 1;;    //idk how this works but ill trust their logic
+	var num = Math.floor(Math.random() * (7 - 1 + 1)) + 1;    //idk how this works but ill trust their logic
 	if(num == 1){drawi(x, y);}
 	if(num == 2){drawL(x, y);}
 	if(num == 3){drawRL(x, y);}
@@ -165,6 +165,22 @@ function pickshape(x, y){
 	if(num == 5){drawsq(x, y);}
 	if(num == 6){drawidk(x, y);}
 	if(num == 7){drawRidk(x, y);}
+}
+
+//theoretically, this should work but im getting "cant read property of undefined" lol
+function clearrows(){
+	for( var c = 0; c < canvas.width/20; c++){
+		for( var r = 0; r < canvas.height/20; r++){
+			if( cells[c][r].status == 1){
+				counter++;
+			}
+			else {break;}
+		}
+		if( counter == 20 ){
+			ctx.clearRect(0, canvas.height-20, canvas.width, canvas.height);
+		}
+		counter = 0;
+	}
 }
 
 function mainDraw () {
@@ -195,7 +211,7 @@ function mainDraw () {
 
 
 	//drawBox(boxBeginX, boxBeginY-20);
-	drawi(boxBeginX, boxBeginY);
+	drawL(boxBeginX, boxBeginY);
 
 	//check for non-empty boxes in cells
 	for(var c=1; c<canvas.width/cellWidth; c++) {
@@ -209,6 +225,7 @@ function mainDraw () {
 		}
 
 	drawGrid();    //here to keep the grid on top of everything else
+	clearrows();
 
 }
 
